@@ -1,24 +1,31 @@
-// JavaScript for Sidebar Toggle (Optional for responsiveness)
-const menuIcon = document.querySelector('.bx-menu');
-const sidebar = document.querySelector('#sidebar');
+// Menangani pengiriman formulir
+document.querySelector("form").addEventListener("submit", function (e) {
+  e.preventDefault(); // Mencegah reload halaman
 
-menuIcon.addEventListener('click', () => {
-    sidebar.classList.toggle('active');
-    menuIcon.classList.toggle('bx-x'); // Toggle icon to 'X' when sidebar is open
-});
+  // Ambil elemen formulir
+  const form = e.target;
 
-// Close the sidebar if a link is clicked (for better UX)
-const sideMenuItems = document.querySelectorAll('.side-menu li a');
-sideMenuItems.forEach(item => {
-    item.addEventListener('click', () => {
-        sidebar.classList.remove('active');
-        menuIcon.classList.remove('bx-x');
+  // Ambil data dari formulir
+  const formData = new FormData(form);
+
+  // Kirim data dengan fetch API
+  fetch("contact.php", {
+    method: "POST",
+    body: formData,
+  })
+    .then((response) => response.text()) // Mengubah respons menjadi teks
+    .then((data) => {
+      // Tampilkan pesan sukses atau gagal
+      const messageDiv = document.querySelector(".form-message");
+      messageDiv.textContent = data; // Tampilkan pesan dari PHP
+      messageDiv.style.display = "block"; // Tampilkan div pesan
+      form.reset(); // Reset formulir jika berhasil
+    })
+    .catch((error) => {
+      // Tangani jika terjadi kesalahan
+      console.error("Terjadi kesalahan:", error);
+      const messageDiv = document.querySelector(".form-message");
+      messageDiv.textContent = "Terjadi kesalahan. Silakan coba lagi.";
+      messageDiv.style.display = "block";
     });
-});
-
-// JavaScript for notification click (simulated)
-const notificationIcon = document.querySelector('.notification');
-
-notificationIcon.addEventListener('click', () => {
-    alert('You have clicked the notification icon!');
 });
